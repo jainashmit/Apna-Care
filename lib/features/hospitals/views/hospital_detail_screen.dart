@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../data/models/hospital_model.dart';
-import '../../../core/widgets/premium_widgets.dart';
+
 
 class HospitalDetailScreen extends StatelessWidget {
   final HospitalModel hospital;
@@ -11,7 +11,6 @@ class HospitalDetailScreen extends StatelessWidget {
   const HospitalDetailScreen({super.key, required this.hospital});
 
   Future<void> _openMaps(BuildContext context) async {
-    // Basic Google Maps query URL
     final query = Uri.encodeComponent(hospital.name);
     final mapUrl = Uri.parse('google.navigation:q=$query');
     final fallbackUrl = Uri.parse('https://www.google.com/maps/search/?api=1&query=$query');
@@ -19,16 +18,13 @@ class HospitalDetailScreen extends StatelessWidget {
     try {
       if (await canLaunchUrl(mapUrl)) {
         await launchUrl(mapUrl);
+      } else if (await canLaunchUrl(fallbackUrl)) {
+        await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
       } else {
-        // Fallback to browser
-        if (await canLaunchUrl(fallbackUrl)) {
-          await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
-        } else {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Could not open map. No supported app found.')),
-            );
-          }
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not open map.')),
+          );
         }
       }
     } catch (e) {
@@ -43,211 +39,227 @@ class HospitalDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          const PremiumBackgroundBlobs(),
-          Column(
-            children: [
-              const SizedBox(height: 10),
-              GlassAppBar(
-                title: 'Hospital Details',
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-                  onPressed: () => Navigator.pop(context),
-                ),
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ── Integrated header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: AppColors.cardShadow(opacity: 0.06),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: AppColors.textPrimary),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Text('Hospital Details', style: AppTextStyles.heading2()),
+                  ),
+                ],
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PremiumGlassCard(
-                        width: double.infinity,
-                        height: 220,
-                        opacity: 0.15,
-                        borderRadius: 32,
-                        blur: 20,
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.6), width: 1.5),
-                        child: Center(
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.primary.withValues(alpha: 0.1),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.primary.withValues(alpha: 0.2),
-                                      blurRadius: 40,
-                                      spreadRadius: 10,
-                                    ),
-                                  ],
-                                ),
+            ),
+
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Hospital icon hero card
+                    Container(
+                      width: double.infinity,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(28),
+                        boxShadow: AppColors.cardShadow(opacity: 0.06),
+                        border: Border.all(color: AppColors.cardBorder),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 90,
+                              height: 90,
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryLight,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primary.withValues(alpha: 0.2),
+                                    blurRadius: 30,
+                                    spreadRadius: 5,
+                                  ),
+                                ],
                               ),
-                              const Text('🏥', style: TextStyle(fontSize: 90)),
-                            ],
-                          ),
+                              child: const Center(
+                                child: Icon(Icons.local_hospital_rounded, size: 46, color: AppColors.primary),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryLight,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                hospital.specialties.isNotEmpty ? hospital.specialties.first : 'Multi-Specialty',
+                                style: AppTextStyles.labelBold(color: AppColors.primary),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 32),
-                      Text(hospital.name, style: AppTextStyles.heading2().copyWith(fontSize: 28)),
-                      const SizedBox(height: 12),
-                      Row(
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Name + badges
+                    Text(hospital.name, style: AppTextStyles.heading2()),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 8,
+                      children: [
+                        _InfoChip(
+                          icon: Icons.star_rounded,
+                          label: '${hospital.rating} (${hospital.reviewCount} reviews)',
+                          color: Colors.amber[700]!,
+                          bgColor: Colors.amber.shade50,
+                        ),
+                        _InfoChip(
+                          icon: Icons.location_on_rounded,
+                          label: '${hospital.distanceKm} km away',
+                          color: AppColors.primary,
+                          bgColor: AppColors.primaryLight,
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Address card
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: AppColors.cardShadow(opacity: 0.04),
+                        border: Border.all(color: AppColors.cardBorder),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Colors.amber.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
+                              color: AppColors.primaryLight,
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Row(
-                              children: [
-                                const Text('⭐', style: TextStyle(fontSize: 14)),
-                                const SizedBox(width: 6),
-                                Text(
-                                  '${hospital.rating} (${hospital.reviewCount} reviews)',
-                                  style: AppTextStyles.bodySemiBold(color: Colors.amber[900] ?? Colors.amber),
-                                ),
-                              ],
-                            ),
+                            child: const Icon(Icons.map_outlined, color: AppColors.primary, size: 18),
                           ),
                           const SizedBox(width: 12),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.location_on_rounded, size: 14, color: AppColors.primary),
-                                const SizedBox(width: 6),
-                                Text(
-                                  '${hospital.distanceKm} km',
-                                  style: AppTextStyles.bodySemiBold(color: AppColors.primary),
-                                ),
-                              ],
+                          Expanded(
+                            child: Text(
+                              hospital.address,
+                              style: AppTextStyles.bodyMedium(color: AppColors.textMuted).copyWith(height: 1.5),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
-                      PremiumGlassCard(
-                        padding: const EdgeInsets.all(20),
-                        opacity: 0.05,
-                        borderRadius: 24,
-                        border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(Icons.map_rounded, color: AppColors.textMuted, size: 20),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                hospital.address,
-                                style: AppTextStyles.bodyMedium(color: AppColors.textMuted).copyWith(height: 1.5),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-                      Text('Medical Specialties', style: AppTextStyles.heading3().copyWith(fontSize: 22)),
-                      const SizedBox(height: 16),
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: hospital.specialties.map((s) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.03),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                              border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
-                            ),
-                            child: Text(s, style: AppTextStyles.labelBold(color: AppColors.primary)),
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 60),
-                      Container(
-                        height: 60,
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    Text('Medical Specialties', style: AppTextStyles.heading3()),
+                    const SizedBox(height: 14),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: hospital.specialties.map((s) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: AppColors.cardShadow(opacity: 0.04),
+                            border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
+                          ),
+                          child: Text(s, style: AppTextStyles.labelBold(color: AppColors.primary)),
+                        );
+                      }).toList(),
+                    ),
+
+                    const SizedBox(height: 36),
+
+                    // Get Directions button — green pill
+                    GestureDetector(
+                      onTap: () => _openMaps(context),
+                      child: Container(
+                        height: 58,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           gradient: AppColors.primaryGradient,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.3),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
-                            ),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: AppColors.greenShadow,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.directions_rounded, color: Colors.white, size: 20),
+                            const SizedBox(width: 10),
+                            Text('Get Directions', style: AppTextStyles.button().copyWith(fontSize: 16)),
                           ],
                         ),
-                        child: ElevatedButton(
-                          onPressed: () => _openMaps(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.directions_rounded, color: Colors.white),
-                              const SizedBox(width: 10),
-                              Text(
-                                'Get Directions',
-                                style: AppTextStyles.button().copyWith(fontSize: 18),
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _ModernIconButton extends StatelessWidget {
+class _InfoChip extends StatelessWidget {
   final IconData icon;
-  final VoidCallback onTap;
-  const _ModernIconButton({required this.icon, required this.onTap});
+  final String label;
+  final Color color;
+  final Color bgColor;
+  const _InfoChip({required this.icon, required this.label, required this.color, required this.bgColor});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.cardBorder),
-        ),
-        child: Icon(icon, color: AppColors.textPrimary, size: 22),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: 5),
+          Text(label, style: AppTextStyles.bodySemiBold(color: color).copyWith(fontSize: 12)),
+        ],
       ),
     );
   }

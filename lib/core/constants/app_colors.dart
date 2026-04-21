@@ -1,125 +1,136 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // ── Backgrounds ──────────────────────────────────────────────
-  static const Color background = Color(0xFFFFFFFF); // pure white
-  static const Color backgroundSecondary = Color(0xFFF0F6FF); // light blue-grey
+  // ── Backgrounds ───────────────────────────────────────────────
+  static const Color background = Color(0xFFF1F7EC);         // Light-green wash
+  static const Color backgroundSecondary = Color(0xFFE8F2DE);
 
-  // ── Headers / Sub-headers ────────────────────────────────────
-  static const Color textMuted = Color(0xFF64748B); // muted grey-blue for sub-headers
+  // ── Brand Green — exact from reference screenshots ────────────
+  static const Color primary = Color(0xFF4CAF50);            // Vivid medium green (exact from photo)
+  static const Color primaryDark = Color(0xFF388E3C);        // Deep forest green
+  static const Color primaryLight = Color(0xFFE8F5E9);       // Pale green (card bg tint)
+  static const Color primaryGlow = Color(0x664CAF50);
 
-  // ── Cards / Surfaces ─────────────────────────────────────────
+  // ── Secondary ─────────────────────────────────────────────────
+  static const Color secondary = Color(0xFF66BB6A);
+  static const Color secondaryLight = Color(0xFFC8E6C9);
+
+  // ── Accent — Emergency Red ────────────────────────────────────
+  static const Color accent = Color(0xFFEF5350);
+  static const Color accentLight = Color(0xFFFFEBEE);
+
+  // ── Surfaces ──────────────────────────────────────────────────
   static const Color cardSurface = Color(0xFFFFFFFF);
-  static const Color cardBorder = Color(0xFFE8EEF8);
+  static const Color cardBorder = Color(0xFFE0EFE0);         // Green-tinted border
+  static const Color divider = Color(0xFFEDF5ED);
 
-  // ── Primary — Medical Blue ────────────────────────────────────
-  static const Color primary = Color(0xFF1565C0); // deep medical blue
-  static const Color primaryMid = Color(0xFF1976D2); // medium blue
-  static const Color primaryLight = Color(0xFFE3F0FF); // light blue tint
-  static const Color primaryGlow = Color(0x441565C0); // blue 27% for glows
-
-  // ── Secondary — Mint Green ────────────────────────────────────
-  static const Color secondary = Color(0xFF00BFA5); // mint green
-  static const Color secondaryLight = Color(0xFFE0F7F4); // mint tint
-
-  // ── Accent — SOS Red ─────────────────────────────────────────
-  static const Color accent = Color(0xFFE53935); // bright red
-  static const Color accentLight = Color(0xFFFFEBEE); // red tint
-
-  // ── Text ─────────────────────────────────────────────────────
-  static const Color textPrimary = Color(0xFF0D1B2A); // near-black
-  static const Color textSecondary = Color(0xFF4A5568); // medium grey
-  static const Color textHint = Color(0xFF9AA5B4); // light grey
+  // ── Text ──────────────────────────────────────────────────────
+  static const Color textPrimary = Color(0xFF1B2B1B);        // Near-black with green undertone
+  static const Color textSecondary = Color(0xFF4A5D4A);      // Dark muted green
+  static const Color textMuted = Color(0xFF7A967A);          // Soft green-grey
+  static const Color textHint = Color(0xFFADC8AD);
   static const Color textOnPrimary = Color(0xFFFFFFFF);
 
-  // ── Semantic ─────────────────────────────────────────────────
-  static const Color star = Color(0xFFFFB300); // amber ratings
-  static const Color success = Color(0xFF2E7D32);
+  // ── Semantic ──────────────────────────────────────────────────
+  static const Color star = Color(0xFFFFB300);
+  static const Color success = Color(0xFF388E3C);
 
-  // ── Gradient helpers ─────────────────────────────────────────
+  // ── Header gradient ───────────────────────────────────────────
+  static const LinearGradient headerGradient = LinearGradient(
+    colors: [Color(0xFFF1F7EC), Color(0xFFE8F2DE)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
+  // ── Brand gradients ───────────────────────────────────────────
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF1565C0), Color(0xFF1976D2)],
+    colors: [Color(0xFF66BB6A), Color(0xFF388E3C)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient secondaryGradient = LinearGradient(
-    colors: [Color(0xFF00BFA5), Color(0xFF0097A7)],
+    colors: [Color(0xFF4CAF50), Color(0xFF388E3C)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient accentGradient = LinearGradient(
-    colors: [Color(0xFFE53935), Color(0xFFB71C1C)],
+    colors: [Color(0xFFEF5350), Color(0xFFC62828)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient backgroundGradient = LinearGradient(
-    colors: [Color(0xFFECF4FF), Color(0xFFFFFFFF), Color(0xFFFFFFFF)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+    colors: [Color(0xFFE8F2DE), Color(0xFFF1F7EC), Color(0xFFF8FDF5)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
   );
 
-  // ── Mesh Gradients (Soft Proxies) ──────────────────────────────
+  // ── Banner gradients (teal-mint for promo banners) ────────────
   static const LinearGradient meshGradient1 = LinearGradient(
-    colors: [Color(0xFFE0F2FE), Color(0xFFF0FDFA), Color(0xFFF9FAFB)],
+    colors: [Color(0xFF80DEEA), Color(0xFF4DB6AC), Color(0xFFB2EBF2)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient meshGradient2 = LinearGradient(
-    colors: [Color(0xFFFDF2F8), Color(0xFFFEF2F2), Color(0xFFFFFFFF)],
+    colors: [Color(0xFF80CBC4), Color(0xFF4CAF50), Color(0xFFB2DFDB)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient meshGradient3 = LinearGradient(
-    colors: [Color(0xFFF5F3FF), Color(0xFFEDE9FE), Color(0xFFFFFFFF)],
+    colors: [Color(0xFFA5D6A7), Color(0xFF4CAF50), Color(0xFFC8E6C9)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  // ── "Go Unlimited" green card gradient ───────────────────────
+  static const LinearGradient subscriptionGradient = LinearGradient(
+    colors: [Color(0xFF66BB6A), Color(0xFF388E3C)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   // ── Shadow helpers ────────────────────────────────────────────
-  static List<BoxShadow> cardShadow({double opacity = 0.10}) => [
+  static List<BoxShadow> cardShadow({double opacity = 0.07}) => [
         BoxShadow(
-          color: const Color(0xFF1565C0).withValues(alpha: opacity),
-          blurRadius: 20,
-          offset: const Offset(0, 6),
-          spreadRadius: 0,
-        ),
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.04),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-      ];
-
-  static List<BoxShadow> elevatedShadow({double opacity = 0.18}) => [
-        BoxShadow(
-          color: const Color(0xFF1565C0).withValues(alpha: opacity),
-          blurRadius: 28,
-          offset: const Offset(0, 10),
-          spreadRadius: -2,
-        ),
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
-          blurRadius: 12,
+          color: const Color(0xFF4CAF50).withValues(alpha: opacity),
+          blurRadius: 16,
           offset: const Offset(0, 4),
+          spreadRadius: -4,
         ),
       ];
 
-  // ── Glass & Depth Shadows ─────────────────────────────────────
+  static List<BoxShadow> elevatedShadow({double opacity = 0.12}) => [
+        BoxShadow(
+          color: const Color(0xFF4CAF50).withValues(alpha: opacity),
+          blurRadius: 24,
+          offset: const Offset(0, 8),
+          spreadRadius: -4,
+        ),
+      ];
+
   static List<BoxShadow> glassShadow() => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.1), // Dark Soft Shadow
+          color: const Color(0xFF4CAF50).withValues(alpha: 0.07),
           blurRadius: 20,
-          offset: const Offset(10, 10),
-        ),
-        BoxShadow(
-          color: Colors.white.withValues(alpha: 0.5), // Light Glow Shadow
-          blurRadius: 20,
-          offset: const Offset(-10, -10),
+          offset: const Offset(0, 6),
+          spreadRadius: -4,
         ),
       ];
+
+  // ── Green Button Shadow ───────────────────────────────────────
+  static const List<BoxShadow> greenShadow = [
+    BoxShadow(
+      color: Color(0x554CAF50),
+      blurRadius: 14,
+      offset: Offset(0, 6),
+      spreadRadius: -4,
+    ),
+  ];
+
+  // Keep tealShadow as alias for backward compatibility
+  static const List<BoxShadow> tealShadow = greenShadow;
 }

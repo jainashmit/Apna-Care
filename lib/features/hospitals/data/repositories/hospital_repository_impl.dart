@@ -2,7 +2,7 @@ import '../../data/models/hospital_model.dart';
 import 'package:apna_ghar/features/hospitals/domain/repositories/hospital_repository.dart';
 
 /// Concrete implementation of [HospitalRepository] returning mock data.
-/// Swap [_fetchFromApi] for real HTTP calls when the backend is ready.
+/// Swap for real HTTP calls when the backend is ready.
 class HospitalRepositoryImpl implements HospitalRepository {
   static final List<HospitalModel> _mockData = [
     HospitalModel(
@@ -60,6 +60,50 @@ class HospitalRepositoryImpl implements HospitalRepository {
       hasEmergency: true,
       hasAmbulance: true,
     ),
+    HospitalModel(
+      id: 'h6',
+      name: 'BLK Super Speciality',
+      rating: 4.7,
+      reviewCount: 435,
+      distanceKm: 3.2,
+      specialties: const ['Oncology', 'Transplant', 'Cardiology'],
+      address: 'Pusa Road, New Delhi – 110005',
+      hasEmergency: true,
+      hasAmbulance: true,
+    ),
+    HospitalModel(
+      id: 'h7',
+      name: 'Safdarjung Hospital',
+      rating: 4.3,
+      reviewCount: 756,
+      distanceKm: 5.4,
+      specialties: const ['General Medicine', 'Surgery', 'OPD'],
+      address: 'Safdarjung, New Delhi – 110029',
+      hasEmergency: true,
+      hasAmbulance: true,
+    ),
+    HospitalModel(
+      id: 'h8',
+      name: 'Rockland Hospital',
+      rating: 4.4,
+      reviewCount: 163,
+      distanceKm: 2.1,
+      specialties: const ['Gynaecology', 'Orthopaedics', 'Dermatology'],
+      address: 'Qutab Institutional Area, New Delhi – 110016',
+      hasEmergency: false,
+      hasAmbulance: true,
+    ),
+    HospitalModel(
+      id: 'h9',
+      name: 'Sir Ganga Ram Hospital',
+      rating: 4.8,
+      reviewCount: 612,
+      distanceKm: 4.8,
+      specialties: const ['Nephrology', 'Urology', 'Gastroenterology'],
+      address: 'Rajinder Nagar, New Delhi – 110060',
+      hasEmergency: true,
+      hasAmbulance: true,
+    ),
   ];
 
   @override
@@ -69,7 +113,6 @@ class HospitalRepositoryImpl implements HospitalRepository {
     String? serviceFilter,
     int radiusKm = 15,
   }) async {
-    // Simulate network latency
     await Future.delayed(const Duration(milliseconds: 300));
     if (serviceFilter == null) return _mockData;
     return _mockData
@@ -85,7 +128,7 @@ class HospitalRepositoryImpl implements HospitalRepository {
     return _mockData.firstWhere((h) => h.id == id);
   }
 
-  /// Returns only hospitals that provide ambulance service.
+  @override
   Future<List<HospitalModel>> getAmbulanceHospitals() async {
     await Future.delayed(const Duration(milliseconds: 200));
     return _mockData.where((h) => h.hasAmbulance).toList();

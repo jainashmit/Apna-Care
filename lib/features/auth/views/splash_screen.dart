@@ -12,8 +12,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with TickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
   late AnimationController _logoController;
   late AnimationController _orbController;
   late AnimationController _textController;
@@ -29,13 +28,11 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark, // dark icons on light bg
+      statusBarIconBrightness: Brightness.dark,
     ));
 
-    _orbController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 6),
-    )..repeat();
+    _orbController = AnimationController(vsync: this, duration: const Duration(seconds: 6))
+      ..repeat();
 
     _logoController = AnimationController(
       vsync: this,
@@ -78,27 +75,27 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          // ── Background gradient (light blue top → white)
+          // ── Green wash background gradient
           Container(
             decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
           ),
 
-          // ── Animated orb 1 (Medical Blue, top-left)
+          // ── Animated soft green orb — top-right
           AnimatedBuilder(
             animation: _orbAnim,
             builder: (_, __) {
               final t = _orbAnim.value;
               return Positioned(
-                top: -100 + 20 * math.sin(t * 2 * math.pi),
-                left: -80 + 15 * math.cos(t * 2 * math.pi),
+                top: -80 + 20 * math.sin(t * 2 * math.pi),
+                right: -60 + 15 * math.cos(t * 2 * math.pi),
                 child: Container(
-                  width: 300,
-                  height: 300,
+                  width: 280,
+                  height: 280,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        AppColors.primary.withValues(alpha: 0.15),
+                        AppColors.primary.withValues(alpha: 0.18),
                         AppColors.primary.withValues(alpha: 0.0),
                       ],
                     ),
@@ -108,17 +105,17 @@ class _SplashScreenState extends State<SplashScreen>
             },
           ),
 
-          // ── Animated orb 2 (Mint Green, bottom-right)
+          // ── Animated soft green orb — bottom-left
           AnimatedBuilder(
             animation: _orbAnim,
             builder: (_, __) {
               final t = _orbAnim.value;
               return Positioned(
-                bottom: -100 + 25 * math.cos(t * 2 * math.pi + 1),
-                right: -60 + 20 * math.sin(t * 2 * math.pi + 1),
+                bottom: -80 + 25 * math.cos(t * 2 * math.pi + 1),
+                left: -50 + 20 * math.sin(t * 2 * math.pi + 1),
                 child: Container(
-                  width: 260,
-                  height: 260,
+                  width: 240,
+                  height: 240,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
@@ -138,7 +135,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Logo container
+                // Logo
                 FadeTransition(
                   opacity: _logoFade,
                   child: ScaleTransition(
@@ -159,7 +156,7 @@ class _SplashScreenState extends State<SplashScreen>
                         ],
                       ),
                       child: const Center(
-                        child: Text('🏠', style: TextStyle(fontSize: 52)),
+                        child: Icon(Icons.health_and_safety_outlined, size: 56, color: Colors.white),
                       ),
                     ),
                   ),
@@ -201,14 +198,13 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-// ── Animated 3-dot loader ────────────────────────────────────
+// ── Animated 3-dot loader ─────────────────────────────────────
 class _AnimatedDots extends StatefulWidget {
   @override
   State<_AnimatedDots> createState() => _AnimatedDotsState();
 }
 
-class _AnimatedDotsState extends State<_AnimatedDots>
-    with TickerProviderStateMixin {
+class _AnimatedDotsState extends State<_AnimatedDots> with TickerProviderStateMixin {
   final List<AnimationController> _controllers = [];
   final List<Animation<double>> _anims = [];
 
@@ -216,10 +212,7 @@ class _AnimatedDotsState extends State<_AnimatedDots>
   void initState() {
     super.initState();
     for (int i = 0; i < 3; i++) {
-      final c = AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 600),
-      );
+      final c = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
       _controllers.add(c);
       _anims.add(Tween<double>(begin: 0, end: -8).animate(
         CurvedAnimation(parent: c, curve: Curves.easeInOut),
@@ -254,7 +247,7 @@ class _AnimatedDotsState extends State<_AnimatedDots>
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primary.withValues(alpha: 0.7 - i * 0.15),
+                  color: AppColors.primary.withValues(alpha: 0.8 - i * 0.15),
                 ),
               ),
             );

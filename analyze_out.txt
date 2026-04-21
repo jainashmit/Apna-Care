@@ -1,0 +1,14 @@
+Analyzing apna_ghar...                                          
+
+warning - Unused import: '../../../core/widgets/glass_card.dart' - lib\features\auth\views\onboarding_screen.dart:5:8 - unused_import
+   info - Statements in an if should be enclosed in a block - lib\features\doctors\domain\providers\doctor_provider.dart:23:42 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\features\doctors\domain\providers\doctor_provider.dart:24:41 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\features\doctors\domain\providers\doctor_provider.dart:25:40 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\features\doctors\domain\providers\doctor_provider.dart:26:41 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\features\doctors\domain\providers\doctor_provider.dart:27:37 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\features\doctors\domain\providers\doctor_provider.dart:28:40 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\features\doctors\domain\providers\doctor_provider.dart:29:39 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\features\doctors\domain\providers\doctor_provider.dart:30:33 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block - lib\features\doctors\domain\providers\doctor_provider.dart:31:43 - curly_braces_in_flow_control_structures
+   info - The member 'getAmbulanceHospitals' overrides an inherited member but isn't annotated with '@override' - lib\features\hospitals\data\repositories\hospital_repository_impl.dart:89:31 - annotate_overrides
+

@@ -64,7 +64,7 @@ class PremiumGlassCard extends StatelessWidget {
   }
 }
 
-/// A container that applies a pure glass shadow without the blur filter, 
+/// A container that applies a pure glass shadow without the blur filter,
 /// useful for layering or simple cards.
 class GlassShadowContainer extends StatelessWidget {
   final Widget child;
@@ -107,30 +107,45 @@ class GlassShadowContainer extends StatelessWidget {
   }
 }
 
-class PremiumBackgroundBlobs extends StatelessWidget {
-  const PremiumBackgroundBlobs({super.key});
+/// Soft green-wash background — replaces old teal orbs with premium green radials.
+class GreenWashBackground extends StatelessWidget {
+  const GreenWashBackground({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned(
-          top: -100,
-          left: -100,
-          child: PremiumOrb(color: AppColors.primary.withValues(alpha: 0.1), size: 350),
+        // Full background gradient
+        Container(
+          decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
         ),
         Positioned(
-          bottom: 200,
-          right: -50,
-          child: PremiumOrb(color: AppColors.secondary.withValues(alpha: 0.08), size: 250),
+          top: -120,
+          right: -80,
+          child: PremiumOrb(color: AppColors.primary.withValues(alpha: 0.12), size: 320),
         ),
         Positioned(
-          top: 400,
-          left: -50,
-          child: PremiumOrb(color: AppColors.accent.withValues(alpha: 0.05), size: 200),
+          bottom: 100,
+          left: -60,
+          child: PremiumOrb(color: AppColors.secondary.withValues(alpha: 0.08), size: 260),
+        ),
+        Positioned(
+          top: 350,
+          right: -40,
+          child: PremiumOrb(color: AppColors.primaryDark.withValues(alpha: 0.05), size: 180),
         ),
       ],
     );
+  }
+}
+
+/// Keep old name as alias for backward compatibility
+class PremiumBackgroundBlobs extends StatelessWidget {
+  const PremiumBackgroundBlobs({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const GreenWashBackground();
   }
 }
 
@@ -146,16 +161,15 @@ class PremiumOrb extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: color,
-      ),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
-        child: Container(color: Colors.transparent),
+        gradient: RadialGradient(
+          colors: [color, color.withValues(alpha: 0.0)],
+        ),
       ),
     );
   }
 }
 
+/// Updated GlassAppBar — uses green-tinted styling.
 class GlassAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
@@ -176,8 +190,8 @@ class GlassAppBar extends StatelessWidget implements PreferredSizeWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: PremiumGlassCard(
         borderRadius: 20,
-        opacity: 0.2,
-        blur: 15,
+        opacity: 0.15,
+        blur: 12,
         border: Border.all(color: Colors.white.withValues(alpha: 0.6), width: 1.2),
         child: AppBar(
           title: Text(title, style: AppTextStyles.heading3()),
@@ -205,7 +219,8 @@ class AnimatedInteractiveContainer extends StatefulWidget {
   State<AnimatedInteractiveContainer> createState() => _AnimatedInteractiveContainerState();
 }
 
-class _AnimatedInteractiveContainerState extends State<AnimatedInteractiveContainer> with SingleTickerProviderStateMixin {
+class _AnimatedInteractiveContainerState extends State<AnimatedInteractiveContainer>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scale;
 
@@ -213,7 +228,8 @@ class _AnimatedInteractiveContainerState extends State<AnimatedInteractiveContai
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
-    _scale = Tween<double>(begin: 1.0, end: 0.96).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _scale = Tween<double>(begin: 1.0, end: 0.96).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
