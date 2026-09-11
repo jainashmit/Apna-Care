@@ -16,9 +16,14 @@ import '../../../core/widgets/hd_network_image.dart';
 import '../../hospitals/views/hospital_detail_screen.dart';
 import '../../hospitals/views/hospital_list_screen.dart';
 import '../../doctors/views/doctor_detail_screen.dart';
+import '../../doctors/views/doctor_list_screen.dart';
 import 'category_selection_screen.dart';
 import 'subscription_sheet.dart';
+import 'profile_screen.dart';
+import 'bookings_screen.dart';
 import '../../../core/services/location_service.dart';
+import '../../platform/views/care_assistant_screen.dart';
+import '../../platform/views/workspaces_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -173,34 +178,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         }
       }),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverToBoxAdapter(child: _buildIntegratedHeader()),
-          SliverToBoxAdapter(child: _buildSearchBar(homeState.isSearchFocused)),
-          SliverToBoxAdapter(child: _buildBannerCarousel()),
-          SliverToBoxAdapter(child: _buildSectionHeader('Our Services', trailingLabel: 'See All', onTap: () {})),
-          SliverToBoxAdapter(child: _buildServicesRow()),
-          SliverToBoxAdapter(child: _buildFindDoctorButton()),
-          SliverToBoxAdapter(
-            child: _buildSectionHeader('Top Rated Doctor', trailingLabel: 'See All', onTap: () {}),
-          ),
-          SliverToBoxAdapter(child: _buildDoctorsRow()),
-          // ── Go Unlimited Banner (subscription anchor)
-          SliverToBoxAdapter(
-            child: SizedBox(key: _subscriptionKey, child: _buildSubscriptionBanner()),
-          ),
-          // ── Top Hospitals
-          SliverToBoxAdapter(
-            child: _buildSectionHeader('Top Hospitals', trailingLabel: 'See All', onTap: () {}),
-          ),
-          SliverToBoxAdapter(child: _buildHospitalsGrid()),
-          // ── Post-hospitals subscription teaser
-          SliverToBoxAdapter(child: _buildSubscriptionTeaser()),
-          const SliverToBoxAdapter(child: SizedBox(height: 120)),
-        ],
-      ),
+      body: _buildCurrentPage(homeState),
     );
+  }
+
+  Widget _buildCurrentPage(HomeState state) {
+    switch (state.selectedNav) {
+      case 1:
+        return const DoctorListScreen(
+          categoryId: 'all',
+          categoryName: 'All doctors',
+        );
+      case 2:
+        return const CareAssistantScreen();
+      case 3:
+        return const BookingsScreen();
+      case 4:
+        return const ProfileScreen();
+      default:
+        return CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverToBoxAdapter(child: _buildIntegratedHeader()),
+            SliverToBoxAdapter(child: _buildSearchBar(state.isSearchFocused)),
+            SliverToBoxAdapter(child: _buildBannerCarousel()),
+            SliverToBoxAdapter(child: _buildSectionHeader('Our Services', trailingLabel: 'See All', onTap: () {})),
+            SliverToBoxAdapter(child: _buildServicesRow()),
+            SliverToBoxAdapter(child: _buildFindDoctorButton()),
+            SliverToBoxAdapter(child: _buildSectionHeader('Top Rated Doctor', trailingLabel: 'See All', onTap: () {})),
+            SliverToBoxAdapter(child: _buildDoctorsRow()),
+            SliverToBoxAdapter(child: SizedBox(key: _subscriptionKey, child: _buildSubscriptionBanner())),
+            SliverToBoxAdapter(child: _buildSectionHeader('Top Hospitals', trailingLabel: 'See All', onTap: () {})),
+            SliverToBoxAdapter(child: _buildHospitalsGrid()),
+            SliverToBoxAdapter(child: _buildSubscriptionTeaser()),
+            const SliverToBoxAdapter(child: SizedBox(height: 120)),
+          ],
+        );
+    }
   }
 
   // ───────────────────────────────────────────────
@@ -357,9 +371,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: AppTextStyles.heading3()),
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.heading3(),
+            ),
+          ),
+          const SizedBox(width: 12),
           if (trailingLabel != null)
             GestureDetector(
               onTap: onTap,
@@ -517,41 +538,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 // Outer glow container
                 Container(
-                  width: 72,
-                  height: 72,
+                  width: 76,
+                  height: 76,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: s.glowColor.withValues(alpha: 0.22),
-                        blurRadius: 18,
-                        offset: const Offset(0, 6),
+                        color: s.glowColor.withValues(alpha: 0.28),
+                        blurRadius: 22,
+                        offset: const Offset(0, 8),
                         spreadRadius: -2,
+                      ),
+                      BoxShadow(
+                        color: s.glowColor.withValues(alpha: 0.10),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                        spreadRadius: -1,
                       ),
                     ],
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                      gradient: s.bgGradient,
+                      // White-to-tint gradient so 3D icon pops with full colour
+                      gradient: LinearGradient(
+                        colors: [Colors.white, s.bgGradient.colors.last],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: s.color.withValues(alpha: 0.18),
+                        color: s.color.withValues(alpha: 0.20),
                         width: 1.5,
                       ),
                     ),
                     child: Center(
                       child: CachedNetworkImage(
                         imageUrl: s.iconUrl,
-                        width: 40,
-                        height: 40,
+                        width: 46,
+                        height: 46,
                         fit: BoxFit.contain,
                         filterQuality: FilterQuality.high,
                         placeholder: (_, __) => Shimmer.fromColors(
                           baseColor: s.color.withValues(alpha: 0.15),
                           highlightColor: s.color.withValues(alpha: 0.05),
                           child: Container(
-                            width: 40,
-                            height: 40,
+                            width: 46,
+                            height: 46,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               shape: BoxShape.circle,
@@ -559,7 +591,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                         ),
                         errorWidget: (_, __, ___) =>
-                            Icon(s.fallbackIcon, size: 32, color: s.color),
+                            Icon(s.fallbackIcon, size: 34, color: s.color),
                       ),
                     ),
                   ),
@@ -1057,10 +1089,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 const SizedBox(width: 64),
                 _NavItem(index: 3, icon: Icons.calendar_month_outlined, label: 'Bookings',
                     selectedNav: selectedNav,
-                    onTap: () => ref.read(homeProvider.notifier).setNav(3)),
+                    onTap: () {
+                      ref.read(homeProvider.notifier).setNav(3);
+                    }),
                 _NavItem(index: 4, icon: Icons.person_outline_rounded, label: 'Profile',
                     selectedNav: selectedNav,
-                    onTap: () => ref.read(homeProvider.notifier).setNav(4)),
+                    onTap: () {
+                      ref.read(homeProvider.notifier).setNav(4);
+                    }),
               ],
             ),
           ),
@@ -1071,22 +1107,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: GestureDetector(
             onTap: () {
               ref.read(homeProvider.notifier).setNav(2);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Row(
-                    children: [
-                      Icon(Icons.smart_toy_rounded, color: Colors.white, size: 18),
-                      SizedBox(width: 10),
-                      Text('AI Assistant coming soon …'),
-                    ],
-                  ),
-                  backgroundColor: const Color(0xFF334F33),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
             },
             child: Container(
               width: 60,

@@ -16,7 +16,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<OnboardingData> _pages = [
     OnboardingData(
-      title: 'Welcome to Apna Ghar',
+      title: 'Welcome to ApnaCare',
       description: 'Your premium healthcare companion. Find the best doctors and hospitals near you with just a tap.',
       icon: '🏠',
       color: AppColors.primary,

@@ -171,10 +171,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                     position: _textSlide,
                     child: Column(
                       children: [
-                        Text('Apna Ghar', style: AppTextStyles.appName()),
+                        Text('ApnaCare', style: AppTextStyles.appName()),
                         const SizedBox(height: 8),
                         Text(
-                          'Healthcare at your doorstep',
+                          'Care coordination for every family',
                           style: AppTextStyles.label(color: AppColors.textSecondary),
                         ),
                       ],

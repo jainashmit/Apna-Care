@@ -26,16 +26,16 @@ class _SubscriptionSheetState extends State<_SubscriptionSheet> {
   final Map<String, Map<String, dynamic>> _plans = {
     'starter': {
       'label':    'Starter',
-      'monthly':  8.00,
-      'yearly':   60.00,
-      'perMonth': 5.00,
+      'monthly':  99.00,
+      'yearly':   899.00,
+      'perMonth': 75.00,
       'saving':   null,
     },
     'unlimited': {
       'label':    'Unlimited',
-      'monthly':  8.00,
-      'yearly':   72.00,
-      'perMonth': 6.00,
+      'monthly':  199.00,
+      'yearly':   1799.00,
+      'perMonth': 150.00,
       'saving':   '25%',
     },
   };
@@ -96,11 +96,11 @@ class _SubscriptionSheetState extends State<_SubscriptionSheet> {
                       const SizedBox(height: 12),
 
                       // ── Title
-                      Text('Go Unlimited', style: AppTextStyles.heading1()),
+                      Text('Care Circle Plus', style: AppTextStyles.heading1()),
                       const SizedBox(height: 8),
 
                       Text(
-                        'Supercharge your productivity from\nthe get go!',
+                        'Keep your family’s care, records and\nreminders connected in one place.',
                         style: AppTextStyles.subHeader().copyWith(height: 1.5),
                         textAlign: TextAlign.center,
                       ),
@@ -110,7 +110,7 @@ class _SubscriptionSheetState extends State<_SubscriptionSheet> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Choose the right plan for you',
+                          Text('Choose a plan for your Care Circle',
                               style: AppTextStyles.bodyMedium()),
                           const SizedBox(height: 10),
                           Container(
@@ -187,7 +187,7 @@ class _SubscriptionSheetState extends State<_SubscriptionSheet> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Save 25% with the Yearly plan',
+                              'Family care coordination, built around you',
                               style: AppTextStyles.labelSmall(color: AppColors.textMuted),
                             ),
                             const SizedBox(height: 20),

@@ -13,18 +13,19 @@ class CategorySelectionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categories = [
-      {'id': 'orthopedics',       'name': 'Orthopedics', 'iconUrl': icons83d('human-bone')},
-      {'id': 'neurology',         'name': 'Neurology',   'iconUrl': icons83d('brain')},
-      {'id': 'cardiology',        'name': 'Cardiology',  'iconUrl': icons83d('heart-with-pulse')},
-      {'id': 'nephrology',        'name': 'Kidney',      'iconUrl': icons83d('water-drop')},
-      {'id': 'gastroenterology',  'name': 'Gastrology',  'iconUrl': icons83d('stomach')},
-      {'id': 'pulmonology',       'name': 'Lungs',       'iconUrl': icons83d('lungs')},
-      {'id': 'dentist',           'name': 'Dentistry',   'iconUrl': icons83d('tooth')},
-      {'id': 'pediatrics',        'name': 'Pediatrics',  'iconUrl': icons83d('baby')},
-      {'id': 'general_physician', 'name': 'General',     'iconUrl': icons83d('stethoscope')},
-      {'id': 'dermatology',       'name': 'Dermatology', 'iconUrl': icons83d('treatment')},
-      {'id': 'ent',               'name': 'ENT',         'iconUrl': icons83d('ear')},
-      {'id': 'ophthalmology',     'name': 'Eye Care',    'iconUrl': icons83d('eye')},
+      // ── Verified working Icons8 3D-Fluency names (all return HTTP 200)
+    {'id': 'orthopedics',       'name': 'Orthopedics', 'iconUrl': icons83d('joint')},
+    {'id': 'neurology',         'name': 'Neurology',   'iconUrl': icons83d('brain')},
+    {'id': 'cardiology',        'name': 'Cardiology',  'iconUrl': icons83d('heart-with-pulse')},
+    {'id': 'nephrology',        'name': 'Kidney',      'iconUrl': icons83d('water')},
+    {'id': 'gastroenterology',  'name': 'Gastrology',  'iconUrl': icons83d('microscope')},
+    {'id': 'pulmonology',       'name': 'Lungs',       'iconUrl': icons83d('lungs')},
+    {'id': 'dentist',           'name': 'Dentistry',   'iconUrl': icons83d('tooth')},
+    {'id': 'pediatrics',        'name': 'Pediatrics',  'iconUrl': icons83d('teddy-bear')},
+    {'id': 'general_physician', 'name': 'General',     'iconUrl': icons83d('stethoscope')},
+    {'id': 'dermatology',       'name': 'Dermatology', 'iconUrl': icons83d('bandage')},
+    {'id': 'ent',               'name': 'ENT',         'iconUrl': icons83d('sound')},
+    {'id': 'ophthalmology',     'name': 'Eye Care',    'iconUrl': icons83d('eye')},
     ];
 
     return Scaffold(
@@ -108,7 +109,13 @@ class CategorySelectionScreen extends ConsumerWidget {
               child: GridView.builder(
                 padding: const EdgeInsets.fromLTRB(24, 4, 24, 32),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: MediaQuery.of(context).size.width > 600 ? 6 : 4,
+                  // Three columns on phones leave enough width for long
+                  // department names and the animated icon scale.
+                  crossAxisCount: MediaQuery.of(context).size.width > 900
+                      ? 6
+                      : MediaQuery.of(context).size.width > 600
+                          ? 5
+                          : 3,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 24,
                   // Give each cell more height for circle + external label
@@ -210,7 +217,7 @@ class _CircularCategoryItemState extends State<_CircularCategoryItem>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Floating circle with optional glow ring
+          // ── Floating circle with 3D icon + drop shadow
           ScaleTransition(
             scale: _scale,
             child: AnimatedContainer(
@@ -219,51 +226,67 @@ class _CircularCategoryItemState extends State<_CircularCategoryItem>
               height: 72,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _pressed ? const Color(0xFFB8DDA8) : const Color(0xFFCEE9C3),
+                // White/light background so colourful 3D icons pop
+                gradient: _pressed
+                    ? const LinearGradient(
+                        colors: [Color(0xFFB8DDA8), Color(0xFFCEE9C3)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      )
+                    : const LinearGradient(
+                        colors: [Color(0xFFFFFFFF), Color(0xFFEDF7E8)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                 // Glow ring when pressed
                 border: _pressed
                     ? Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.45),
-                        width: 3.5,
+                        color: AppColors.primary.withValues(alpha: 0.50),
+                        width: 3,
                       )
-                    : Border.all(color: Colors.transparent, width: 3.5),
+                    : Border.all(
+                        color: const Color(0xFFD0EDCC),
+                        width: 1.5,
+                      ),
                 boxShadow: _pressed
                     ? [
                         BoxShadow(
                           color: AppColors.primary.withValues(alpha: 0.40),
-                          blurRadius: 22,
+                          blurRadius: 24,
                           spreadRadius: 2,
-                          offset: const Offset(0, 6),
+                          offset: const Offset(0, 8),
                         ),
                       ]
                     : [
+                        // Outer soft shadow — gives 3D depth
                         BoxShadow(
-                          color: const Color(0xFF5A9A44).withValues(alpha: 0.30),
-                          blurRadius: 16,
-                          spreadRadius: 0,
-                          offset: const Offset(0, 6),
+                          color: const Color(0xFF3D7A34).withValues(alpha: 0.18),
+                          blurRadius: 20,
+                          spreadRadius: -2,
+                          offset: const Offset(0, 8),
                         ),
+                        // Inner tight shadow for realism
                         BoxShadow(
-                          color: const Color(0xFF5A9A44).withValues(alpha: 0.10),
-                          blurRadius: 4,
+                          color: const Color(0xFF3D7A34).withValues(alpha: 0.10),
+                          blurRadius: 6,
                           spreadRadius: -1,
-                          offset: const Offset(0, 2),
+                          offset: const Offset(0, 3),
                         ),
                       ],
               ),
               child: Center(
                 child: CachedNetworkImage(
                   imageUrl: widget.iconUrl,
-                  width: 40,
-                  height: 40,
+                  width: 46,
+                  height: 46,
                   fit: BoxFit.contain,
                   filterQuality: FilterQuality.high,
                   placeholder: (_, __) => Shimmer.fromColors(
                     baseColor: const Color(0xFFD0E8C8),
                     highlightColor: const Color(0xFFEEF7E8),
                     child: Container(
-                      width: 40,
-                      height: 40,
+                      width: 46,
+                      height: 46,
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
@@ -272,7 +295,7 @@ class _CircularCategoryItemState extends State<_CircularCategoryItem>
                   ),
                   errorWidget: (_, __, ___) => const Icon(
                     Icons.medical_services_rounded,
-                    size: 26,
+                    size: 28,
                     color: AppColors.primary,
                   ),
                 ),

@@ -40,8 +40,9 @@ String hdHospitalUrl(String? seed) {
 /// Returns a Premium Icons8 3D Fluency icon URL (512px, transparent bg).
 /// Use for service icons, category icons, and any UI iconography.
 /// Source: https://icons8.com/icons/set/3d-fluency -- free for web/app use.
+/// Only use VERIFIED icon names — wrong names return 404 silently.
 String icons83d(String name) =>
-    'https://img.icons8.com/3d-fluency/94/$name.png';
+    'https://img.icons8.com/3d-fluency/512/$name.png';
 
 
 /// A premium circular avatar that:
