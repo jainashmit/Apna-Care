@@ -99,6 +99,20 @@ class _SubscriptionSheetState extends State<_SubscriptionSheet> {
                       Text('Care Circle Plus', style: AppTextStyles.heading1()),
                       const SizedBox(height: 8),
 
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: AppColors.accentLight,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'Showcase preview · payments are not connected yet',
+                          style: AppTextStyles.labelBold(color: AppColors.accent),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
                       Text(
                         'Keep your family’s care, records and\nreminders connected in one place.',
                         style: AppTextStyles.subHeader().copyWith(height: 1.5),

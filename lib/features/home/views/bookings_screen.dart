@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -23,18 +25,78 @@ class BookingsScreen extends StatelessWidget {
       );
 }
 
-class _UpcomingBookings extends StatelessWidget {
+class _UpcomingBookings extends StatefulWidget {
   const _UpcomingBookings();
 
   @override
-  Widget build(BuildContext context) => ListView(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-        children: const [
-          _BookingCard(date: 'SUN, 7 SEP', time: '11:30 AM', doctor: 'Dr. Nisha Kapoor', specialty: 'Cardiology · Apollo Clinic', status: 'Confirmed', color: AppColors.primary),
-          SizedBox(height: 12),
-          _BookingCard(date: 'WED, 10 SEP', time: '04:00 PM', doctor: 'Dr. Rohan Mehta', specialty: 'ENT · CarePoint Hospital', status: 'Payment pending', color: AppColors.accent),
-        ],
-      );
+  State<_UpcomingBookings> createState() => _UpcomingBookingsState();
+}
+
+class _UpcomingBookingsState extends State<_UpcomingBookings> {
+  List<Map<String, dynamic>> _saved = const [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSaved();
+  }
+
+  Future<void> _loadSaved() async {
+    final preferences = await SharedPreferences.getInstance();
+    final values = preferences.getStringList('demo_appointments') ?? const <String>[];
+    if (!mounted) return;
+    setState(() {
+      _saved = values.map((value) {
+        try {
+          return Map<String, dynamic>.from(jsonDecode(value) as Map);
+        } catch (_) {
+          return <String, dynamic>{};
+        }
+      }).where((item) => item.isNotEmpty).toList().reversed.toList();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cards = <Widget>[
+      const _BookingCard(
+        date: 'SUN, 7 SEP',
+        time: '11:30 AM',
+        doctor: 'Dr. Nisha Kapoor',
+        specialty: 'Cardiology · Apollo Clinic',
+        status: 'Confirmed',
+        color: AppColors.primary,
+      ),
+      const SizedBox(height: 12),
+      const _BookingCard(
+        date: 'WED, 10 SEP',
+        time: '04:00 PM',
+        doctor: 'Dr. Rohan Mehta',
+        specialty: 'ENT · CarePoint Hospital',
+        status: 'Payment pending',
+        color: AppColors.accent,
+      ),
+    ];
+    for (final booking in _saved) {
+      final date = DateTime.tryParse(booking['date'] as String? ?? '');
+      cards.add(const SizedBox(height: 12));
+      cards.add(_BookingCard(
+        date: date == null ? 'NEW BOOKING' : _formatDate(date),
+        time: booking['time'] as String? ?? 'Time pending',
+        doctor: booking['doctorName'] as String? ?? 'Doctor',
+        specialty: '${booking['specialty'] ?? 'Consultation'} · ${booking['hospitalName'] ?? 'ApnaCare'}',
+        status: 'Confirmed',
+        color: AppColors.primary,
+      ));
+    }
+    return ListView(padding: const EdgeInsets.fromLTRB(20, 16, 20, 32), children: cards);
+  }
+
+  String _formatDate(DateTime date) {
+    const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    return '${weekdays[date.weekday - 1]}, ${date.day} ${months[date.month - 1]}';
+  }
 }
 
 class _PastBookings extends StatelessWidget {

@@ -9,6 +9,14 @@ class HospitalModel {
   final String address;
   final bool hasEmergency;
   final bool hasAmbulance;
+  final String phone;
+  final String openHours;
+  final List<String> services;
+  final int availableDoctors;
+  final String emergencyWait;
+  final bool acceptsInsurance;
+  final bool verified;
+  final bool isLive;
 
   const HospitalModel({
     required this.id,
@@ -20,6 +28,14 @@ class HospitalModel {
     required this.address,
     this.hasEmergency = false,
     this.hasAmbulance = false,
+    this.phone = '+91 1800 123 4567',
+    this.openHours = 'Open today · 24 hours',
+    this.services = const ['OPD', 'Diagnostics', 'Pharmacy'],
+    this.availableDoctors = 12,
+    this.emergencyWait = '8–12 min',
+    this.acceptsInsurance = true,
+    this.verified = true,
+    this.isLive = false,
   });
 
   factory HospitalModel.fromJson(Map<String, dynamic> json) {
@@ -33,6 +49,14 @@ class HospitalModel {
       address: json['address'] as String,
       hasEmergency: json['has_emergency'] as bool? ?? false,
       hasAmbulance: json['has_ambulance'] as bool? ?? false,
+      phone: json['phone'] as String? ?? '+91 1800 123 4567',
+      openHours: json['open_hours'] as String? ?? 'Open today · 24 hours',
+      services: List<String>.from(json['services'] as List? ?? const ['OPD', 'Diagnostics', 'Pharmacy']),
+      availableDoctors: (json['available_doctors'] as num?)?.toInt() ?? 12,
+      emergencyWait: json['emergency_wait'] as String? ?? '8–12 min',
+      acceptsInsurance: json['accepts_insurance'] as bool? ?? true,
+      verified: json['verified'] as bool? ?? true,
+      isLive: json['is_live'] as bool? ?? false,
     );
   }
 
@@ -46,5 +70,13 @@ class HospitalModel {
         'address': address,
         'has_emergency': hasEmergency,
         'has_ambulance': hasAmbulance,
+        'phone': phone,
+        'open_hours': openHours,
+        'services': services,
+        'available_doctors': availableDoctors,
+        'emergency_wait': emergencyWait,
+        'accepts_insurance': acceptsInsurance,
+        'verified': verified,
+        'is_live': isLive,
       };
 }

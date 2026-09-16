@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../core/routes/app_routes.dart';
+import '../data/ai_gateway.dart';
 
 /// A frontend prototype of the tool-based Care Companion. It intentionally
 /// guides users to app actions rather than pretending to diagnose or prescribe.
@@ -14,6 +15,7 @@ class CareAssistantScreen extends StatefulWidget {
 }
 
 class _CareAssistantScreenState extends State<CareAssistantScreen> {
+  static const _ai = AiGateway();
   final _controller = TextEditingController();
   bool _isThinking = false;
   _AssistantAction? _nextAction;
@@ -30,7 +32,6 @@ class _CareAssistantScreenState extends State<CareAssistantScreen> {
   Future<void> _ask(String text) async {
     final prompt = text.trim();
     if (prompt.isEmpty || _isThinking) return;
-    final reply = _replyFor(prompt);
     final action = _actionFor(prompt);
     setState(() {
       _messages.add(_ChatMessage(true, prompt));
@@ -38,10 +39,11 @@ class _CareAssistantScreenState extends State<CareAssistantScreen> {
       _nextAction = null;
     });
     _controller.clear();
-    await Future<void>.delayed(const Duration(milliseconds: 520));
+    final liveReply = await _ai.reply(prompt);
+    await Future<void>.delayed(const Duration(milliseconds: 320));
     if (!mounted) return;
     setState(() {
-      _messages.add(_ChatMessage(false, reply));
+      _messages.add(_ChatMessage(false, liveReply ?? _replyFor(prompt)));
       _isThinking = false;
       _nextAction = action;
     });
@@ -81,7 +83,7 @@ class _CareAssistantScreenState extends State<CareAssistantScreen> {
         appBar: AppBar(
           backgroundColor: AppColors.background,
           surfaceTintColor: Colors.transparent,
-          title: Row(children: [Container(width: 36, height: 36, decoration: const BoxDecoration(gradient: AppColors.primaryGradient, shape: BoxShape.circle), child: const Icon(Icons.smart_toy_rounded, color: Colors.white, size: 20)), const SizedBox(width: 10), Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Care Companion', style: AppTextStyles.bodySemiBold()), Text('Care navigation · offline demo mode', style: AppTextStyles.labelSmall(color: AppColors.textMuted))])]),
+          title: Row(children: [Container(width: 36, height: 36, decoration: const BoxDecoration(gradient: AppColors.primaryGradient, shape: BoxShape.circle), child: const Icon(Icons.smart_toy_rounded, color: Colors.white, size: 20)), const SizedBox(width: 10), Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Care Companion', style: AppTextStyles.bodySemiBold()), Text('Care navigation · safe fallback enabled', style: AppTextStyles.labelSmall(color: AppColors.textMuted))])]),
         ),
         body: SafeArea(
           child: Column(children: [

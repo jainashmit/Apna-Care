@@ -2,11 +2,20 @@ import '../../../auth/data/models/user_model.dart';
 
 /// Abstract contract for auth operations.
 abstract class AuthRepository {
-  /// Send OTP to [mobile] number. Returns true if sent successfully.
-  Future<bool> sendOtp(String mobile);
+  /// Create an account with email/password and a contact profile.
+  Future<UserModel> createWithEmail({
+    required String name,
+    required String email,
+    required String password,
+    required String phone,
+    required String city,
+  });
 
-  /// Verify [otp] for [mobile]. Returns authenticated [UserModel] on success.
-  Future<UserModel> verifyOtp({required String mobile, required String otp});
+  /// Sign in with a verified email/password account.
+  Future<UserModel> signInWithEmail({required String email, required String password});
+
+  /// Send a free-tier email password reset link.
+  Future<void> sendPasswordReset(String email);
 
   /// Sign in with Google. Returns authenticated [UserModel].
   Future<UserModel> signInWithGoogle();

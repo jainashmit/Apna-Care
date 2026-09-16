@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "151121631235",
+    "project_id": "apna-care-abee7",
+    "storage_bucket": "apna-care-abee7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151121631235:android:0198e32f3668d136c2d636",
+        "android_client_info": {
+          "package_name": "com.apnacare.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACjo00ynArTYuyQxLToVOSHIuQ_jNokz4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

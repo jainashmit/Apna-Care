@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../features/auth/views/splash_screen.dart';
 import '../../features/auth/views/login_screen.dart';
 import '../../features/auth/views/onboarding_screen.dart';
+import '../../features/auth/views/email_auth_screen.dart';
 import '../../features/home/views/home_screen.dart';
 import '../../features/home/views/profile_screen.dart';
 import '../../features/home/views/bookings_screen.dart';
@@ -15,6 +16,7 @@ class AppRoutes {
   static const String splash = '/';
   static const String onboarding = '/onboarding';
   static const String auth = '/auth';
+  static const String emailAuth = '/email-auth';
   static const String home = '/home';
   static const String ambulance = '/ambulance';
   static const String careHub = '/care-hub';
@@ -33,6 +35,7 @@ class AppRoutes {
     splash: (context) => const SplashScreen(),
     onboarding: (context) => const OnboardingScreen(),
     auth: (context) => const LoginScreen(),
+    emailAuth: (context) => const EmailAuthScreen(),
     home: (context) => const HomeScreen(),
     ambulance: (context) => const AmbulanceHospitalsScreen(),
     careHub: (context) => const CareHubScreen(),
@@ -45,6 +48,10 @@ class AppRoutes {
     organizationAccess: (context) => const OrganizationAccessScreen(),
     profile: (context) => const ProfileScreen(),
     bookings: (context) => const BookingsScreen(),
-    doctors: (context) => const DoctorListScreen(categoryId: 'all', categoryName: 'All doctors'),
+    doctors:
+        (context) => const DoctorListScreen(
+          categoryId: 'all',
+          categoryName: 'All doctors',
+        ),
   };
 }

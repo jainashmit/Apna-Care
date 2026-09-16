@@ -147,6 +147,13 @@ class HospitalDetailScreen extends StatelessWidget {
                           color: AppColors.primary,
                           bgColor: AppColors.primaryLight,
                         ),
+                        if (hospital.verified)
+                          _InfoChip(
+                            icon: Icons.verified_rounded,
+                            label: hospital.isLive ? 'Live listing' : 'ApnaCare verified',
+                            color: AppColors.primary,
+                            bgColor: AppColors.primaryLight,
+                          ),
                       ],
                     ),
 
@@ -183,6 +190,63 @@ class HospitalDetailScreen extends StatelessWidget {
                       ),
                     ),
 
+                    const SizedBox(height: 16),
+
+                    // Trust and availability summary. These fields are also
+                    // part of the future provider API contract.
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: AppColors.cardBorder),
+                      ),
+                      child: Column(
+                        children: [
+                          _DetailRow(
+                            icon: Icons.schedule_rounded,
+                            label: 'Hours',
+                            value: hospital.openHours,
+                          ),
+                          const Divider(height: 20),
+                          _DetailRow(
+                            icon: Icons.people_alt_outlined,
+                            label: 'Doctors available',
+                            value: '${hospital.availableDoctors} specialists today',
+                          ),
+                          const Divider(height: 20),
+                          _DetailRow(
+                            icon: Icons.shield_outlined,
+                            label: 'Payment & coverage',
+                            value: hospital.acceptsInsurance
+                                ? 'Insurance and UPI accepted'
+                                : 'Self-pay only',
+                          ),
+                          if (hospital.hasEmergency) ...[
+                            const Divider(height: 20),
+                            _DetailRow(
+                              icon: Icons.emergency_rounded,
+                              label: 'Emergency response',
+                              value: 'Typical arrival ${hospital.emergencyWait}',
+                              valueColor: Colors.red.shade700,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    Text('Services available', style: AppTextStyles.heading3()),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: hospital.services.map((service) {
+                        return _ServicePill(label: service);
+                      }).toList(),
+                    ),
+
                     const SizedBox(height: 28),
 
                     Text('Medical Specialties', style: AppTextStyles.heading3()),
@@ -205,6 +269,49 @@ class HospitalDetailScreen extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 36),
+
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () async {
+                              final phone = Uri.parse('tel:${hospital.phone.replaceAll(' ', '')}');
+                              if (!await launchUrl(phone) && context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Calling is unavailable in this demo.')),
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.call_outlined),
+                            label: const Text('Call hospital'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.primary,
+                              side: const BorderSide(color: AppColors.primary),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Appointment flow ready for Firebase booking.')),
+                              );
+                            },
+                            icon: const Icon(Icons.calendar_month_outlined),
+                            label: const Text('Book OPD'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
 
                     // Get Directions button — green pill
                     GestureDetector(
@@ -261,6 +368,58 @@ class _InfoChip extends StatelessWidget {
           Text(label, style: AppTextStyles.bodySemiBold(color: color).copyWith(fontSize: 12)),
         ],
       ),
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color? valueColor;
+
+  const _DetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20, color: AppColors.primary),
+        const SizedBox(width: 12),
+        Expanded(child: Text(label, style: AppTextStyles.bodyMedium(color: AppColors.textMuted))),
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: AppTextStyles.bodySemiBold(color: valueColor ?? AppColors.textPrimary),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ServicePill extends StatelessWidget {
+  final String label;
+
+  const _ServicePill({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
+      decoration: BoxDecoration(
+        color: AppColors.primaryLight,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(label, style: AppTextStyles.labelBold(color: AppColors.primary)),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../../core/services/onboarding_store.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -35,6 +36,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     ),
   ];
 
+  Future<void> _finishOnboarding() async {
+    await OnboardingStore.markCompleted();
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, AppRoutes.auth);
+  }
+
   void _onNext() {
     if (_currentPage < _pages.length - 1) {
       _pageController.nextPage(
@@ -42,7 +49,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOutCubic,
       );
     } else {
-      Navigator.pushReplacementNamed(context, AppRoutes.auth);
+      _finishOnboarding();
     }
   }
 
@@ -86,7 +93,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Align(
                   alignment: Alignment.topRight,
                   child: TextButton(
-                    onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.auth),
+                    onPressed: () {
+                      _finishOnboarding();
+                    },
                     child: Text('Skip', style: AppTextStyles.labelBold(color: AppColors.textSecondary)),
                   ),
                 ),

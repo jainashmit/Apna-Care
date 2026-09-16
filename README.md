@@ -10,7 +10,9 @@ ApnaCare is a Flutter healthcare coordination prototype built around one clear p
 - Platform control centre for provider verification, emergency coverage, quality, and revenue signals.
 - Custom RBAC demo with organization-scoped permissions and custom roles.
 - Offline-first Care Companion with safe intent routing and clickable actions for appointments, reports, reminders, and emergencies.
-- Dummy repositories and models are used intentionally so Firebase can be added later without redesigning the UI contracts.
+- Firebase-ready repositories and build-time configuration are included. The app still
+  falls back to deterministic demo data when credentials, location permission, network,
+  or an AI endpoint are unavailable.
 
 ## Recommended demo flow
 
@@ -27,7 +29,11 @@ flutter pub get
 flutter run
 ```
 
-This version does not require Firebase or an LLM API key. The assistant is intentionally offline and safe; a server-side LLM adapter can be added later without exposing provider keys in Flutter.
+The default showcase build does not require Firebase or an LLM key. To connect them,
+follow [`docs/firebase_setup.md`](docs/firebase_setup.md). Email/password and Google
+sign-in, Firestore appointment writes, Google Places nearby hospitals, and the `aiChat`
+callable function are guarded behind configuration, with offline fallbacks kept in place
+for reliable demos. Phone/SMS authentication is intentionally not used.
 
 ## Architecture highlights
 

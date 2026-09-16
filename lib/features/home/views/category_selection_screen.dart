@@ -109,17 +109,16 @@ class CategorySelectionScreen extends ConsumerWidget {
               child: GridView.builder(
                 padding: const EdgeInsets.fromLTRB(24, 4, 24, 32),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  // Three columns on phones leave enough width for long
-                  // department names and the animated icon scale.
+                  // Four compact columns keep the department picker useful on
+                  // a phone without the large empty gaps of the old layout.
                   crossAxisCount: MediaQuery.of(context).size.width > 900
                       ? 6
                       : MediaQuery.of(context).size.width > 600
                           ? 5
-                          : 3,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 24,
-                  // Give each cell more height for circle + external label
-                  childAspectRatio: 0.80,
+                          : 4,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.90,
                 ),
                 itemCount: categories.length,
                 itemBuilder: (context, index) {

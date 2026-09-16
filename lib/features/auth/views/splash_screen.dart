@@ -1,9 +1,11 @@
 import 'dart:math' as math;
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../../core/services/onboarding_store.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,6 +15,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+  Timer? _navigationTimer;
   late AnimationController _logoController;
   late AnimationController _orbController;
   late AnimationController _textController;
@@ -56,13 +59,20 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
     _logoController.forward().then((_) => _textController.forward());
 
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+    _navigationTimer = Timer(const Duration(seconds: 3), () async {
+      if (!mounted) return;
+      final hasCompletedOnboarding = await OnboardingStore.hasCompleted();
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(
+        context,
+        hasCompletedOnboarding ? AppRoutes.auth : AppRoutes.onboarding,
+      );
     });
   }
 
   @override
   void dispose() {
+    _navigationTimer?.cancel();
     _logoController.dispose();
     _orbController.dispose();
     _textController.dispose();

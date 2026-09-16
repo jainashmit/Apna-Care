@@ -22,6 +22,10 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>ApnaCare uses your location to show nearby hospitals, doctors and ambulances.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>ApnaCare uses your location to coordinate emergency care when you ask it to.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

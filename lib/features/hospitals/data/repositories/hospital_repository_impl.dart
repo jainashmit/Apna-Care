@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
+import '../../../../core/config/app_config.dart';
 import '../../data/models/hospital_model.dart';
 import 'package:apna_ghar/features/hospitals/domain/repositories/hospital_repository.dart';
 
@@ -113,13 +118,60 @@ class HospitalRepositoryImpl implements HospitalRepository {
     String? serviceFilter,
     int radiusKm = 15,
   }) async {
+    final liveResults = await _fetchFromPlaces(lat: lat, lng: lng, radiusKm: radiusKm);
+    if (liveResults.isNotEmpty) {
+      return _filter(liveResults, serviceFilter);
+    }
     await Future.delayed(const Duration(milliseconds: 300));
-    if (serviceFilter == null) return _mockData;
-    return _mockData
-        .where((h) => h.specialties.any(
-              (s) => s.toLowerCase().contains(serviceFilter.toLowerCase()),
+    return _filter(_mockData, serviceFilter);
+  }
+
+  List<HospitalModel> _filter(List<HospitalModel> hospitals, String? serviceFilter) {
+    if (serviceFilter == null || serviceFilter.trim().isEmpty) return hospitals;
+    return hospitals
+        .where((hospital) => hospital.specialties.any(
+              (specialty) => specialty.toLowerCase().contains(serviceFilter.toLowerCase()),
             ))
         .toList();
+  }
+
+  Future<List<HospitalModel>> _fetchFromPlaces({
+    required double lat,
+    required double lng,
+    required int radiusKm,
+  }) async {
+    if (AppConfig.googlePlacesApiKey.isEmpty) return const [];
+    try {
+      final uri = Uri.https('maps.googleapis.com', '/maps/api/place/nearbysearch/json', {
+        'location': '$lat,$lng',
+        'radius': '${radiusKm * 1000}',
+        'type': 'hospital',
+        'key': AppConfig.googlePlacesApiKey,
+      });
+      final response = await http.get(uri).timeout(const Duration(seconds: 5));
+      if (response.statusCode != 200) return const [];
+      final payload = jsonDecode(response.body) as Map<String, dynamic>;
+      if (payload['status'] != 'OK') return const [];
+      final results = payload['results'] as List<dynamic>? ?? const [];
+      return results.map((raw) {
+        final item = raw as Map<String, dynamic>;
+        final name = item['name'] as String? ?? 'Nearby hospital';
+        return HospitalModel(
+          id: item['place_id'] as String? ?? name,
+          name: name,
+          rating: (item['rating'] as num?)?.toDouble() ?? 0,
+          reviewCount: (item['user_ratings_total'] as num?)?.toInt() ?? 0,
+          distanceKm: 0,
+          specialties: const ['Hospital', 'OPD'],
+          address: item['vicinity'] as String? ?? 'Address unavailable',
+          hasEmergency: name.toLowerCase().contains('emergency'),
+          hasAmbulance: false,
+          isLive: true,
+        );
+      }).toList();
+    } catch (_) {
+      return const [];
+    }
   }
 
   @override

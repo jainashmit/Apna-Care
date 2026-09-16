@@ -7,6 +7,7 @@ import '../../../core/widgets/hd_network_image.dart';
 import '../data/models/doctor_model.dart';
 import '../../hospitals/views/hospital_detail_screen.dart';
 import '../../hospitals/data/models/hospital_model.dart';
+import '../../bookings/data/booking_service.dart';
 
 class DoctorDetailScreen extends StatefulWidget {
   final DoctorModel doctor;
@@ -594,7 +595,27 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
           ],
         ),
         child: GestureDetector(
-          onTap: () {},
+          onTap: () async {
+            if (_selectedTime == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Choose an available time first.')),
+              );
+              return;
+            }
+            await const BookingService().createAppointment(
+              doctorId: widget.doctor.id,
+              doctorName: widget.doctor.name,
+              specialty: widget.doctor.specialty,
+              hospitalName: widget.doctor.hospitalName,
+              date: _selectedDate,
+              time: _selectedTime!,
+              fee: widget.doctor.opdFee,
+            );
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Appointment confirmed and saved to My bookings.')),
+            );
+          },
           child: Container(
             height: 58,
             decoration: BoxDecoration(

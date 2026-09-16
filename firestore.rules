@@ -1,0 +1,95 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function self(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function organizationMember(orgId) {
+      return signedIn() && exists(
+        /databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid)
+      );
+    }
+
+    function organizationOwner(orgId) {
+      return organizationMember(orgId)
+        && get(
+          /databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid)
+        ).data.role == 'owner';
+    }
+
+    // Patient profile and emergency contacts.
+    match /users/{userId} {
+      allow read, create, update: if self(userId);
+      allow delete: if false;
+    }
+
+    // Public discovery data is readable, but only provider admins can edit it.
+    match /providers/{providerId} {
+      allow read: if true;
+      allow create, update, delete: if signedIn()
+        && request.resource.data.ownerId == request.auth.uid;
+    }
+
+    // Patient-created bookings. Provider-side permissions can be added later
+    // through organization membership and custom role claims.
+    match /appointments/{appointmentId} {
+      allow create: if signedIn()
+        && request.resource.data.patientId == request.auth.uid;
+      allow read: if signedIn()
+        && (resource.data.patientId == request.auth.uid
+          || organizationMember(resource.data.get('organizationId', '')));
+      allow update: if signedIn()
+        && (resource.data.patientId == request.auth.uid
+          || organizationMember(resource.data.get('organizationId', '')));
+      allow delete: if false;
+    }
+
+    match /care_tasks/{taskId} {
+      allow read: if signedIn()
+        && resource.data.ownerId == request.auth.uid;
+      allow create, update: if signedIn()
+        && request.resource.data.ownerId == request.auth.uid;
+      allow delete: if signedIn() && resource.data.ownerId == request.auth.uid;
+    }
+
+    match /emergency_incidents/{incidentId} {
+      allow create: if signedIn()
+        && request.resource.data.requesterId == request.auth.uid;
+      allow read: if signedIn()
+        && (resource.data.requesterId == request.auth.uid
+          || organizationMember(resource.data.get('organizationId', '')));
+      allow update: if signedIn()
+        && (resource.data.requesterId == request.auth.uid
+          || organizationMember(resource.data.get('organizationId', '')));
+      allow delete: if false;
+    }
+
+    match /organizations/{organizationId} {
+      allow read: if organizationMember(organizationId);
+      allow update: if organizationOwner(organizationId);
+      allow create, delete: if false;
+
+      match /members/{memberId} {
+        allow read: if organizationMember(organizationId);
+        allow create, update, delete: if organizationOwner(organizationId);
+      }
+    }
+
+    match /billing_events/{eventId} {
+      allow read: if signedIn() && resource.data.userId == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Everything else is closed by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

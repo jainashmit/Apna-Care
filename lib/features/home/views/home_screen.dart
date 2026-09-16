@@ -23,7 +23,6 @@ import 'profile_screen.dart';
 import 'bookings_screen.dart';
 import '../../../core/services/location_service.dart';
 import '../../platform/views/care_assistant_screen.dart';
-import '../../platform/views/workspaces_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});

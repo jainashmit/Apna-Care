@@ -46,7 +46,7 @@ class _OrganizationAccessScreenState extends State<OrganizationAccessScreen> {
                 title: Text(permission.label, style: AppTextStyles.bodyMedium()),
                 subtitle: Text('${permission.group} · ${permission.code}', style: AppTextStyles.labelSmall(color: AppColors.textMuted)),
                 value: enabled,
-                activeColor: AppColors.primary,
+                activeThumbColor: AppColors.primary,
                 onChanged: role.id == 'owner'
                     ? null
                     : (value) => setSheetState(() {
@@ -70,7 +70,7 @@ class _OrganizationAccessScreenState extends State<OrganizationAccessScreen> {
         backgroundColor: AppColors.background,
         appBar: AppBar(backgroundColor: AppColors.background, surfaceTintColor: Colors.transparent, elevation: 0, title: Text('Organization access', style: AppTextStyles.heading3())),
         body: ListView(padding: const EdgeInsets.fromLTRB(20, 8, 20, 32), children: [
-          Container(padding: const EdgeInsets.all(18), decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(22)), child: Row(children: [Container(width: 48, height: 48, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(14)), child: const Icon(Icons.domain_rounded, color: Colors.white)), const SizedBox(width: 13), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(_organizationName, style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700)), const SizedBox(height: 3), Text('Owner: ${_ownerName}', style: TextStyle(color: Colors.white70))])), const Icon(Icons.verified_rounded, color: Colors.white)])),
+          Container(padding: const EdgeInsets.all(18), decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(22)), child: Row(children: [Container(width: 48, height: 48, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(14)), child: const Icon(Icons.domain_rounded, color: Colors.white)), const SizedBox(width: 13), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(_organizationName, style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700)), const SizedBox(height: 3), Text('Owner: $_ownerName', style: TextStyle(color: Colors.white70))])), const Icon(Icons.verified_rounded, color: Colors.white)])),
           const SizedBox(height: 24),
           Row(children: [Expanded(child: Text('Roles and access', style: AppTextStyles.heading3())), TextButton.icon(onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Role builder coming next'))), icon: const Icon(Icons.add_rounded), label: const Text('New role'))]),
           const SizedBox(height: 8),
